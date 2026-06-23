@@ -1,0 +1,8 @@
+{
+  "extensionsDir": "./extension",
+  "outputDir": "./bundled-extensions",
+  "minFiles": 1,
+  "scriptType": "js",
+  "concurrency": 4,
+  "strictSecurity": true
+}

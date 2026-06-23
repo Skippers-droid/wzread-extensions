@@ -1,0 +1,10 @@
+{
+  "name": "mgeko",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "main": "index.cjs",
+  "bundled": true,
+  "bundledAt": "2026-06-22T15:43:20.438Z",
+  "cover": "cover.png"
+}

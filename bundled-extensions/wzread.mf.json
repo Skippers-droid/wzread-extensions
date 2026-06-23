@@ -1,0 +1,16 @@
+{
+  "extensions": [
+    {
+      "name": "mgeko",
+      "version": "1.0.0",
+      "description": "",
+      "author": ""
+    },
+    {
+      "name": "qiscan",
+      "version": "1.0.0",
+      "description": "",
+      "author": ""
+    }
+  ]
+}
