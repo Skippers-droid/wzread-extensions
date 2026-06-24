@@ -8,12 +8,12 @@
       "scriptPath": "./comicx/index.cjs"
     },
     {
-      "name": "kingofshojo",
+      "name": "hentairead",
       "version": "1.0.0",
       "description": "",
       "author": "",
-      "scriptPath": "./kingofshojo/index.cjs",
-      "cover": "https://github.com/Skippers-droid/wzread-extensions/main//bundled-extensions/kingofshojo/cover.png"
+      "scriptPath": "./hentairead/index.cjs",
+      "cover": "https://github.com/Skippers-droid/wzread-extensions/main/bundled-extensions/hentairead/cover.png"
     },
     {
       "name": "manwharead",
@@ -21,15 +21,15 @@
       "description": "",
       "author": "",
       "scriptPath": "./manwharead/index.cjs",
-      "cover": "https://github.com/Skippers-droid/wzread-extensions/main//bundled-extensions/manwharead/cover.png"
+      "cover": "https://github.com/Skippers-droid/wzread-extensions/main/bundled-extensions/manwharead/cover.png"
     },
     {
-      "name": "hentairead",
+      "name": "kingofshojo",
       "version": "1.0.0",
       "description": "",
       "author": "",
-      "scriptPath": "./hentairead/index.cjs",
-      "cover": "https://github.com/Skippers-droid/wzread-extensions/main//bundled-extensions/hentairead/cover.png"
+      "scriptPath": "./kingofshojo/index.cjs",
+      "cover": "https://github.com/Skippers-droid/wzread-extensions/main/bundled-extensions/kingofshojo/cover.png"
     },
     {
       "name": "mgeko",
@@ -37,15 +37,7 @@
       "description": "",
       "author": "",
       "scriptPath": "./mgeko/index.cjs",
-      "cover": "https://github.com/Skippers-droid/wzread-extensions/main//bundled-extensions/mgeko/cover.png"
-    },
-    {
-      "name": "thunder",
-      "version": "1.0.0",
-      "description": "",
-      "author": "",
-      "scriptPath": "./thunder/index.cjs",
-      "cover": "https://github.com/Skippers-droid/wzread-extensions/main//bundled-extensions/thunder/cover.png"
+      "cover": "https://github.com/Skippers-droid/wzread-extensions/main/bundled-extensions/mgeko/cover.png"
     },
     {
       "name": "qiscan",
@@ -53,7 +45,15 @@
       "description": "",
       "author": "",
       "scriptPath": "./qiscan/index.cjs",
-      "cover": "https://github.com/Skippers-droid/wzread-extensions/main//bundled-extensions/qiscan/cover.png"
+      "cover": "https://github.com/Skippers-droid/wzread-extensions/main/bundled-extensions/qiscan/cover.png"
+    },
+    {
+      "name": "thunder",
+      "version": "1.0.0",
+      "description": "",
+      "author": "",
+      "scriptPath": "./thunder/index.cjs",
+      "cover": "https://github.com/Skippers-droid/wzread-extensions/main/bundled-extensions/thunder/cover.png"
     }
   ]
 }
