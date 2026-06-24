@@ -6,6 +6,6 @@
   "main": "index.cjs",
   "scriptPath": "./mgeko/index.cjs",
   "bundled": true,
-  "bundledAt": "2026-06-24T13:30:44.147Z",
-  "cover": "cover.png"
+  "bundledAt": "2026-06-24T13:50:43.038Z",
+  "cover": "https://github.com/Skippers-droid/wzread-extensions/main//bundled-extensions/mgeko/cover.png"
 }

@@ -13,7 +13,8 @@ function loadConfig(configPath) {
       minFiles: 1,
       scriptType: 'js',
       concurrency: 4,
-      strictSecurity: true
+      strictSecurity: true,
+      githubRepo: null
     };
   }
 
@@ -25,7 +26,8 @@ function loadConfig(configPath) {
       minFiles: config.minFiles || 1,
       scriptType: config.scriptType || 'js',
       concurrency: config.concurrency || 4,
-      strictSecurity: config.strictSecurity !== false
+      strictSecurity: config.strictSecurity !== false,
+      githubRepo: config.githubRepo || null
     };
   } catch (error) {
     console.error('Failed to parse extension.maker.json:', error);
@@ -102,19 +104,28 @@ async function bundleExtension(extensionPath, stagingDir, config) {
   };
 
   let coverFound = false;
+  let coverFileName = null;
+  
   try {
     const extContent = fs.readFileSync(extFile, 'utf-8');
     const coverMatch = extContent.match(/cover:\s*['"]([^'"]+)['"]/);
     if (coverMatch) {
       const coverPath = coverMatch[1];
       const fullCoverPath = path.join(extensionPath, coverPath);
+      
       if (fs.existsSync(fullCoverPath)) {
         const ext = path.extname(fullCoverPath);
-        const destPath = path.join(extStagingDir, `cover${ext}`);
+        coverFileName = `cover${ext}`;
+        const destPath = path.join(extStagingDir, coverFileName);
         fs.copyFileSync(fullCoverPath, destPath);
-        metaData.cover = `cover${ext}`;
         coverFound = true;
         console.log(`  ✓ Cover image found: ${coverPath}`);
+        
+        if (config.githubRepo) {
+          metaData.cover = `${config.githubRepo}/bundled-extensions/${extName}/${coverFileName}`;
+        } else {
+          metaData.cover = coverFileName;
+        }
       } else {
         console.warn(`  ⚠ Cover specified in extension_info but not found: ${coverPath}`);
       }
@@ -145,7 +156,12 @@ async function bundleExtension(extensionPath, stagingDir, config) {
       }
     };
     copyDir(assetsDir, assetDestDir);
-    metaData.assets = 'assets';
+    
+    if (config.githubRepo) {
+      metaData.assets = `${config.githubRepo}/bundled-extensions/${extName}/assets`;
+    } else {
+      metaData.assets = 'assets';
+    }
   }
 
   const metaFile = path.join(extStagingDir, 'extension.json');
@@ -225,12 +241,22 @@ async function bundleAllExtensions(config) {
           if (fs.existsSync(pkgPath)) {
             pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
           }
+          
+          let coverUrl = null;
+          const extStagingDir = path.join(stagingDir, extName);
+          const metaFile = path.join(extStagingDir, 'extension.json');
+          if (fs.existsSync(metaFile)) {
+            const metaData = JSON.parse(fs.readFileSync(metaFile, 'utf-8'));
+            coverUrl = metaData.cover || null;
+          }
+          
           results.push({
             name: pkg.name || extName,
             version: pkg.version || '1.0.0',
             description: pkg.description || '',
             author: pkg.author || '',
-            scriptPath: `./${extName}/index.cjs`
+            scriptPath: `./${extName}/index.cjs`,
+            cover: coverUrl
           });
         } else {
           failCount++;
@@ -269,7 +295,7 @@ async function bundleAllExtensions(config) {
       }
     }
 
-    await createExtensionManifest(outputDir, results);
+    await createExtensionManifest(outputDir, results, config);
 
     try {
       fs.rmSync(stagingDir, { recursive: true, force: true });
@@ -309,15 +335,23 @@ function getJavaScriptFiles(dir, scriptType) {
   return files;
 }
 
-async function createExtensionManifest(outputDir, extensions) {
+async function createExtensionManifest(outputDir, extensions, config) {
   const manifest = {
-    extensions: extensions.map(ext => ({
-      name: ext.name,
-      version: ext.version,
-      description: ext.description,
-      author: ext.author,
-      scriptPath: ext.scriptPath
-    }))
+    extensions: extensions.map(ext => {
+      const entry = {
+        name: ext.name,
+        version: ext.version,
+        description: ext.description,
+        author: ext.author,
+        scriptPath: ext.scriptPath
+      };
+      
+      if (ext.cover) {
+        entry.cover = ext.cover;
+      }
+      
+      return entry;
+    })
   };
 
   const manifestPath = path.join(outputDir, 'wzread.mf.json');
@@ -334,6 +368,9 @@ console.log(`  Minimum Files: ${config.minFiles}`);
 console.log(`  Script Type: ${config.scriptType}`);
 console.log(`  Concurrency: ${config.concurrency}`);
 console.log(`  Strict Security: ${config.strictSecurity}`);
+if (config.githubRepo) {
+  console.log(`  GitHub Repo: ${config.githubRepo}`);
+}
 console.log('');
 
 bundleAllExtensions(config).catch(console.error);

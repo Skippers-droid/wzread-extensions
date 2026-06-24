@@ -6,6 +6,6 @@
   "main": "index.cjs",
   "scriptPath": "./qiscan/index.cjs",
   "bundled": true,
-  "bundledAt": "2026-06-24T13:30:44.168Z",
-  "cover": "cover.png"
+  "bundledAt": "2026-06-24T13:50:43.074Z",
+  "cover": "https://github.com/Skippers-droid/wzread-extensions/main//bundled-extensions/qiscan/cover.png"
 }
