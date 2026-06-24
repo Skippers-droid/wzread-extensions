@@ -124,7 +124,7 @@ async function bundleExtension(extensionPath, stagingDir, config) {
         if (config.githubRepo) {
           metaData.cover = `${config.githubRepo}/bundled-extensions/${extName}/${coverFileName}`;
         } else {
-          metaData.cover = coverFileName;
+          metaData.cover = `./${extName}/${coverFileName}`;
         }
       } else {
         console.warn(`  ⚠ Cover specified in extension_info but not found: ${coverPath}`);
@@ -160,7 +160,7 @@ async function bundleExtension(extensionPath, stagingDir, config) {
     if (config.githubRepo) {
       metaData.assets = `${config.githubRepo}/bundled-extensions/${extName}/assets`;
     } else {
-      metaData.assets = 'assets';
+      metaData.assets = `./${extName}/assets`;
     }
   }
 

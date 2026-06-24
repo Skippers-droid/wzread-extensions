@@ -5,5 +5,5 @@
   "scriptType": "js",
   "concurrency": 4,
   "strictSecurity": true,
-  "githubRepo": "https://github.com/Skippers-droid/wzread-extensions/main"
+  "githubRepo": "https://raw.githubusercontent.com/Skippers-droid/wzread-extensions/main"
 }
