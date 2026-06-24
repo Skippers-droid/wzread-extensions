@@ -4,7 +4,8 @@
   "description": "",
   "author": "",
   "main": "index.cjs",
+  "scriptPath": "./qiscan/index.cjs",
   "bundled": true,
-  "bundledAt": "2026-06-22T15:43:20.455Z",
+  "bundledAt": "2026-06-24T13:30:44.168Z",
   "cover": "cover.png"
 }

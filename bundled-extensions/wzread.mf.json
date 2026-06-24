@@ -1,16 +1,53 @@
 {
   "extensions": [
     {
+      "name": "comicx",
+      "version": "1.0.0",
+      "description": "",
+      "author": "",
+      "scriptPath": "./comicx/index.cjs"
+    },
+    {
+      "name": "kingofshojo",
+      "version": "1.0.0",
+      "description": "",
+      "author": "",
+      "scriptPath": "./kingofshojo/index.cjs"
+    },
+    {
+      "name": "hentairead",
+      "version": "1.0.0",
+      "description": "",
+      "author": "",
+      "scriptPath": "./hentairead/index.cjs"
+    },
+    {
+      "name": "manwharead",
+      "version": "1.0.0",
+      "description": "",
+      "author": "",
+      "scriptPath": "./manwharead/index.cjs"
+    },
+    {
       "name": "mgeko",
       "version": "1.0.0",
       "description": "",
-      "author": ""
+      "author": "",
+      "scriptPath": "./mgeko/index.cjs"
+    },
+    {
+      "name": "thunder",
+      "version": "1.0.0",
+      "description": "",
+      "author": "",
+      "scriptPath": "./thunder/index.cjs"
     },
     {
       "name": "qiscan",
       "version": "1.0.0",
       "description": "",
-      "author": ""
+      "author": "",
+      "scriptPath": "./qiscan/index.cjs"
     }
   ]
 }

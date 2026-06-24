@@ -96,6 +96,7 @@ async function bundleExtension(extensionPath, stagingDir, config) {
     description: pkg.description || '',
     author: pkg.author || '',
     main: 'index.cjs',
+    scriptPath: `./${extName}/index.cjs`,
     bundled: true,
     bundledAt: new Date().toISOString()
   };
@@ -228,7 +229,8 @@ async function bundleAllExtensions(config) {
             name: pkg.name || extName,
             version: pkg.version || '1.0.0',
             description: pkg.description || '',
-            author: pkg.author || ''
+            author: pkg.author || '',
+            scriptPath: `./${extName}/index.cjs`
           });
         } else {
           failCount++;
@@ -313,7 +315,8 @@ async function createExtensionManifest(outputDir, extensions) {
       name: ext.name,
       version: ext.version,
       description: ext.description,
-      author: ext.author
+      author: ext.author,
+      scriptPath: ext.scriptPath
     }))
   };
 
