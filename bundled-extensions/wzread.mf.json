@@ -16,20 +16,20 @@
       "cover": "https://raw.githubusercontent.com/Skippers-droid/wzread-extensions/main/bundled-extensions/manwharead/cover.png"
     },
     {
-      "name": "kingofshojo",
-      "version": "1.0.0",
-      "description": "",
-      "author": "",
-      "scriptPath": "./kingofshojo/index.cjs",
-      "cover": "https://raw.githubusercontent.com/Skippers-droid/wzread-extensions/main/bundled-extensions/kingofshojo/cover.png"
-    },
-    {
       "name": "hentairead",
       "version": "1.0.0",
       "description": "",
       "author": "",
       "scriptPath": "./hentairead/index.cjs",
       "cover": "https://raw.githubusercontent.com/Skippers-droid/wzread-extensions/main/bundled-extensions/hentairead/cover.png"
+    },
+    {
+      "name": "kingofshojo",
+      "version": "1.0.0",
+      "description": "",
+      "author": "",
+      "scriptPath": "./kingofshojo/index.cjs",
+      "cover": "https://raw.githubusercontent.com/Skippers-droid/wzread-extensions/main/bundled-extensions/kingofshojo/cover.png"
     },
     {
       "name": "mgeko",

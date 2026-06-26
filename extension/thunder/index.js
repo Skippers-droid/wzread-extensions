@@ -10,6 +10,10 @@ const extension = {
         }
       });
       
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const html = await response.text();
       
       const results = [];
@@ -53,6 +57,10 @@ const extension = {
           'User-Agent': '{user-agent}'
         }
       });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       
       const html = await response.text();
       
@@ -145,6 +153,10 @@ const extension = {
         }
       });
       
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const html = await response.text();
       
       const imageRegex = /"images"\s*:\s*\[([\s\S]*?)\]/;
@@ -187,6 +199,10 @@ const extension = {
         }
       });
       
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const html = await response.text();
       
       let images = [];
@@ -221,6 +237,159 @@ const extension = {
         perPage: perPage,
         hasMore: end < total
       };
+      
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getPopular: async () => {
+    try {
+      const url = 'https://en-thunderscans.com/';
+      
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': '{user-agent}'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const html = await response.text();
+      
+      const items = [];
+      
+      const itemRegex = /<div class="bs">[\s\S]*?<a href="([^"]+)" title="([^"]+)">[\s\S]*?<img[^>]*src="([^"]+)"[^>]*>[\s\S]*?<div class="tt">([^<]+)<\/div>[\s\S]*?<span class="status-dot ([^"]+)"><\/span>[\s\S]*?<i>([^<]+)<\/i>/g;
+      
+      let match;
+      while ((match = itemRegex.exec(html)) !== null) {
+        const url = match[1];
+        const title = match[2];
+        const cover = match[3];
+        const titleText = match[4].trim();
+        const status = match[5];
+        const statusText = match[6].trim();
+        
+        const idMatch = url.match(/\/comics\/([^\/]+)\/?/);
+        const id = idMatch ? idMatch[1] : '';
+        
+        items.push({
+          id: id,
+          slug: id,
+          title: titleText || title,
+          cover: cover,
+          status: statusText || status,
+        });
+      }
+      
+      return items;
+      
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getLatest: async () => {
+    try {
+      const url = 'https://en-thunderscans.com/';
+      
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': '{user-agent}'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const html = await response.text();
+      
+      const items = [];
+      
+      const itemRegex = /<div class="bs styletere ">[\s\S]*?<a href="([^"]+)" title="([^"]+)">[\s\S]*?<img[^>]*src="([^"]+)"[^>]*>[\s\S]*?<div class="tt">([^<]+)<\/div>[\s\S]*?<span class="status-dot ([^"]+)"><\/span>[\s\S]*?<i>([^<]+)<\/i>/g;
+      
+      let match;
+      while ((match = itemRegex.exec(html)) !== null) {
+        const url = match[1];
+        const title = match[2];
+        const cover = match[3];
+        const titleText = match[4].trim();
+        const status = match[5];
+        const statusText = match[6].trim();
+        
+        const idMatch = url.match(/\/comics\/([^\/]+)\/?/);
+        const id = idMatch ? idMatch[1] : '';
+        
+        items.push({
+          id: id,
+          slug: id,
+          title: titleText || title,
+          cover: cover,
+          status: statusText || status,
+        });
+      }
+      
+      return items;
+      
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getFiltered: async (filter = {}) => {
+    try {
+      let url = 'https://en-thunderscans.com/comics/';
+      
+      const params = new URLSearchParams();
+      if (filter.status) params.append('status', filter.status);
+      if (filter.type) params.append('type', filter.type);
+      if (filter.order) params.append('order', filter.order);
+      
+      if (params.toString()) {
+        url += `?${params.toString()}`;
+      }
+      
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': '{user-agent}'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const html = await response.text();
+      
+      const items = [];
+      
+      const itemRegex = /<div class="bs">[\s\S]*?<a href="([^"]+)" title="([^"]+)">[\s\S]*?<img[^>]*src="([^"]+)"[^>]*>[\s\S]*?<div class="tt">([^<]+)<\/div>[\s\S]*?<span class="status-dot ([^"]+)"><\/span>[\s\S]*?<i>([^<]+)<\/i>/g;
+      
+      let match;
+      while ((match = itemRegex.exec(html)) !== null) {
+        const url = match[1];
+        const title = match[2];
+        const cover = match[3];
+        const titleText = match[4].trim();
+        const status = match[5];
+        const statusText = match[6].trim();
+        
+        const idMatch = url.match(/\/comics\/([^\/]+)\/?/);
+        const id = idMatch ? idMatch[1] : '';
+        
+        items.push({
+          id: id,
+          slug: id,
+          title: titleText || title,
+          cover: cover,
+          status: statusText || status,
+        });
+      }
+      
+      return items;
       
     } catch (error) {
       throw error;
