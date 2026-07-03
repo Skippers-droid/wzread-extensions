@@ -136,9 +136,10 @@ const extension = {
   },
 
   extension_info: () => ({
+    id: 'thunderscans',
     name: 'ThunderScans',
     version: '1.0.0',
-    description: 'ThunderScans EN extension',
+    description: 'ThunderScans EN extension - Read comics from ThunderScans',
     author: 'wzread',
     cover: './extension_cover.png'
   }),
