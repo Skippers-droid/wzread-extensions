@@ -84,7 +84,8 @@ const extension = {
     version: '1.0.0',
     description: '',
     author: 'wzread',
-    cover: './extension_cover.png'
+    cover: './extension_cover.png',
+    id: 'qiscan'
   }),
 
   chapter: async (bookId, chapterNumber) => {
