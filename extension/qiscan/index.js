@@ -19,7 +19,9 @@ const extension = {
         slug: item.slug,
         title: item.title,
         description: item.alternativeTitles || '',
-        cover: item.cover
+        cover: item.cover,
+        status: item.status,
+        type: item.type
       }));
       
       return results;
@@ -60,29 +62,32 @@ const extension = {
         }));
         chapters.sort((a, b) => a.number - b.number);
       }
-    } catch (error) {
-      // Silent fail
+    } catch (error) {}
+    
+    let genres = [];
+    if (seriesData.genres && Array.isArray(seriesData.genres)) {
+      genres = seriesData.genres.map(g => g.name);
     }
     
     return {
       id: seriesData.id,
       slug: seriesData.slug,
       title: seriesData.title,
+      altTitle: seriesData.alternativeTitles || '',
       description: seriesData.description ? seriesData.description.replace(/<[^>]*>/g, '') : '',
       cover: seriesData.cover,
       author: seriesData.author || '',
       status: seriesData.status,
-      genres: seriesData.genres?.map(g => g.name) || [],
+      genres: genres,
       chapters: chapters,
-      type: seriesData.type,
-      alternativeTitles: seriesData.alternativeTitles
+      type: seriesData.type
     };
   },
 
   extension_info: () => ({
     name: 'Qiscan',
     version: '1.0.0',
-    description: '',
+    description: 'Qiscan extension - Read manga from Qimanga.com',
     author: 'wzread',
     cover: './extension_cover.png',
     id: 'qiscan'
@@ -138,6 +143,130 @@ const extension = {
       
       return images;
       
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getPopular: async () => {
+    try {
+      const response = await fetch('https://api.qimanga.com/api/v1/home', {
+        headers: {
+          'User-Agent': '{user-agent}'
+        }
+      });
+      
+      const data = await response.json();
+      
+      if (data.b && data.b.popular) {
+        return data.b.popular.map(item => ({
+          id: item.id,
+          slug: item.slug,
+          title: item.title,
+          cover: item.cover,
+          status: item.status,
+          type: item.type
+        }));
+      }
+      
+      return [];
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getLatest: async () => {
+    try {
+      const response = await fetch('https://api.qimanga.com/api/v1/home/latest?page=1&perPage=20', {
+        headers: {
+          'User-Agent': '{user-agent}'
+        }
+      });
+      
+      const data = await response.json();
+      
+      if (data.b && data.b.data) {
+        return data.b.data.map(item => ({
+          id: item.id,
+          slug: item.slug,
+          title: item.title,
+          cover: item.cover,
+          status: item.status,
+          type: item.type
+        }));
+      }
+      
+      return [];
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getFiltered: async (filter = {}) => {
+    try {
+      let url = 'https://api.qimanga.com/api/v1/series?page=1&perPage=20';
+      
+      const params = new URLSearchParams();
+      
+      if (filter.status) {
+        params.append('status', filter.status.toUpperCase());
+      }
+      
+      if (filter.type) {
+        params.append('type', filter.type.toUpperCase());
+      }
+      
+      if (filter.order) {
+        switch(filter.order) {
+          case 'asc':
+            params.append('sort', 'oldest');
+            break;
+          case 'desc':
+            params.append('sort', 'latest');
+            break;
+          case 'title':
+            params.append('sort', 'title');
+            break;
+          default:
+            params.append('sort', 'latest');
+        }
+      } else {
+        params.append('sort', 'latest');
+      }
+      
+      if (filter.search) {
+        params.append('search', filter.search);
+      }
+      
+      if (params.toString()) {
+        url += `&${params.toString()}`;
+      }
+      
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': '{user-agent}'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.data && Array.isArray(data.data)) {
+        return data.data.map(item => ({
+          id: item.id,
+          slug: item.slug,
+          title: item.title,
+          cover: item.cover,
+          status: item.status,
+          type: item.type,
+          altTitle: item.alternativeTitles || ''
+        }));
+      }
+      
+      return [];
     } catch (error) {
       throw error;
     }

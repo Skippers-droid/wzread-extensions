@@ -1,0 +1,10 @@
+{
+  "name": "vortex",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "main": "index.cjs",
+  "scriptPath": "./vortex/index.cjs",
+  "bundled": true,
+  "bundledAt": "2026-07-10T12:44:40.143Z"
+}

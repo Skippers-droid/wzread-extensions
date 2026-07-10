@@ -138,6 +138,7 @@ const extension = {
     version: '1.0.0',
     description: 'Comix.to extension',
     author: 'wzread',
+    cover: './extension_cover.png',
   }),
 
   chapter: async (bookId, chapterNumber) => {
@@ -273,6 +274,148 @@ const extension = {
         perPage: perPage,
         hasMore: end < total
       };
+
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getPopular: async () => {
+    try {
+      const url = `https://comix.to/api/v1/manga?order%5Bchapter_updated_at%5D=desc&limit=20&content_rating%5B%5D=safe&content_rating%5B%5D=suggestive`;
+
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': '{user-agent}'
+        }
+      });
+
+      const data = await response.json();
+
+      if (data.status !== 'ok' || !data.result || !data.result.items) {
+        return [];
+      }
+
+      return data.result.items.map((item) => ({
+        id: item.hid,
+        slug: item.hid,
+        title: item.title,
+        cover: item.poster?.large || item.poster?.medium || '',
+        status: item.status,
+        type: item.type,
+        latestChapter: item.latestChapter,
+        synopsis: item.synopsis || '',
+      }));
+
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getLatest: async () => {
+    try {
+      const url = `https://comix.to/api/v1/manga?order%5Bchapter_updated_at%5D=desc&limit=20&content_rating%5B%5D=safe&content_rating%5B%5D=suggestive`;
+
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': '{user-agent}'
+        }
+      });
+
+      const data = await response.json();
+
+      if (data.status !== 'ok' || !data.result || !data.result.items) {
+        return [];
+      }
+
+      return data.result.items.map((item) => ({
+        id: item.hid,
+        slug: item.hid,
+        title: item.title,
+        cover: item.poster?.large || item.poster?.medium || '',
+        status: item.status,
+        type: item.type,
+        latestChapter: item.latestChapter,
+        synopsis: item.synopsis || '',
+      }));
+
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getFiltered: async (filter = {}) => {
+    try {
+      let url = 'https://comix.to/api/v1/manga?page=1&limit=28&content_rating%5B%5D=safe&content_rating%5B%5D=suggestive';
+
+      const params = new URLSearchParams();
+
+      if (filter.status) {
+        params.append('status', filter.status.toLowerCase());
+      }
+
+      if (filter.type) {
+        params.append('type', filter.type.toLowerCase());
+      }
+
+      if (filter.order) {
+        switch(filter.order) {
+          case 'asc':
+            params.append('order%5Bchapter_updated_at%5D', 'asc');
+            break;
+          case 'desc':
+            params.append('order%5Bchapter_updated_at%5D', 'desc');
+            break;
+          case 'title':
+            params.append('order%5Btitle%5D', 'asc');
+            break;
+          default:
+            params.append('order%5Bchapter_updated_at%5D', 'desc');
+        }
+      } else {
+        params.append('order%5Bchapter_updated_at%5D', 'desc');
+      }
+
+      if (filter.genre) {
+        params.append('genres_in%5B%5D', filter.genre);
+        params.append('genres_mode', 'and');
+      }
+
+      if (filter.search) {
+        params.append('keyword', filter.search);
+      }
+
+      const queryString = params.toString();
+      if (queryString) {
+        url += `&${queryString}`;
+      }
+
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': '{user-agent}'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.status !== 'ok' || !data.result || !data.result.items) {
+        return [];
+      }
+
+      return data.result.items.map((item) => ({
+        id: item.hid,
+        slug: item.hid,
+        title: item.title,
+        cover: item.poster?.large || item.poster?.medium || '',
+        status: item.status,
+        type: item.type,
+        latestChapter: item.latestChapter,
+        synopsis: item.synopsis || '',
+      }));
 
     } catch (error) {
       throw error;

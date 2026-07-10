@@ -292,6 +292,179 @@ const extension = {
     } catch (error) {
       throw error;
     }
+  },
+
+  getPopular: async () => {
+    try {
+      const response = await fetch('https://kingofshojo.com/', {
+        headers: {
+          'User-Agent': '{user-agent}'
+        }
+      });
+
+      const html = await response.text();
+
+      const items = [];
+
+      const itemRegex = /<div class="bs">[\s\S]*?<a href="([^"]+)" title="([^"]+)">[\s\S]*?<img[^>]*src="([^"]+)"[^>]*>[\s\S]*?<div class="tt">([^<]+)<\/div>[\s\S]*?<div class="epxs">([^<]+)<\/div>/g;
+
+      let match;
+      while ((match = itemRegex.exec(html)) !== null) {
+        const url = match[1];
+        const title = match[2];
+        const cover = match[3];
+        const titleText = match[4].trim();
+        const latestChapter = match[5].trim();
+
+        const idMatch = url.match(/\/manga\/([^\/]+)\/?/);
+        const id = idMatch ? idMatch[1] : '';
+
+        let cleanCover = cover;
+        if (cleanCover) {
+          cleanCover = cleanCover.replace(/\/\//g, '/');
+          cleanCover = cleanCover.replace(/^http:\//, 'http://');
+          cleanCover = cleanCover.replace(/^https:\//, 'https://');
+        }
+
+        items.push({
+          id: id,
+          slug: id,
+          title: titleText || title,
+          cover: cleanCover,
+          latestChapter: latestChapter,
+        });
+      }
+
+      return items;
+
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getLatest: async () => {
+    try {
+      const response = await fetch('https://kingofshojo.com/', {
+        headers: {
+          'User-Agent': '{user-agent}'
+        }
+      });
+
+      const html = await response.text();
+
+      const items = [];
+
+      const itemRegex = /<div class="bs">[\s\S]*?<a href="([^"]+)" title="([^"]+)">[\s\S]*?<img[^>]*src="([^"]+)"[^>]*>[\s\S]*?<div class="tt">([^<]+)<\/div>[\s\S]*?<div class="epxs">([^<]+)<\/div>/g;
+
+      let match;
+      while ((match = itemRegex.exec(html)) !== null) {
+        const url = match[1];
+        const title = match[2];
+        const cover = match[3];
+        const titleText = match[4].trim();
+        const latestChapter = match[5].trim();
+
+        const idMatch = url.match(/\/manga\/([^\/]+)\/?/);
+        const id = idMatch ? idMatch[1] : '';
+
+        let cleanCover = cover;
+        if (cleanCover) {
+          cleanCover = cleanCover.replace(/\/\//g, '/');
+          cleanCover = cleanCover.replace(/^http:\//, 'http://');
+          cleanCover = cleanCover.replace(/^https:\//, 'https://');
+        }
+
+        items.push({
+          id: id,
+          slug: id,
+          title: titleText || title,
+          cover: cleanCover,
+          latestChapter: latestChapter,
+        });
+      }
+
+      return items;
+
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getFiltered: async (filter = {}) => {
+    try {
+      let url = 'https://kingofshojo.com/manga/';
+
+      const params = new URLSearchParams();
+
+      if (filter.type) {
+        params.append('type', filter.type.toLowerCase());
+      }
+
+      if (filter.status) {
+        params.append('status', filter.status.toLowerCase());
+      }
+
+      if (filter.order) {
+        params.append('order', filter.order);
+      }
+
+      if (filter.search) {
+        params.append('search', filter.search);
+        url = 'https://kingofshojo.com/';
+      }
+
+      if (filter.genre) {
+        url = `https://kingofshojo.com/genres/${filter.genre}/`;
+      }
+
+      if (params.toString()) {
+        url += `?${params.toString()}`;
+      }
+
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': '{user-agent}'
+        }
+      });
+
+      const html = await response.text();
+
+      const items = [];
+
+      const itemRegex = /<div class="bs">[\s\S]*?<a href="([^"]+)" title="([^"]+)">[\s\S]*?<img[^>]*src="([^"]+)"[^>]*>[\s\S]*?<div class="tt">([^<]+)<\/div>[\s\S]*?<div class="epxs">([^<]+)<\/div>/g;
+
+      let match;
+      while ((match = itemRegex.exec(html)) !== null) {
+        const url = match[1];
+        const title = match[2];
+        const cover = match[3];
+        const titleText = match[4].trim();
+        const latestChapter = match[5].trim();
+
+        const idMatch = url.match(/\/manga\/([^\/]+)\/?/);
+        const id = idMatch ? idMatch[1] : '';
+
+        let cleanCover = cover;
+        if (cleanCover) {
+          cleanCover = cleanCover.replace(/\/\//g, '/');
+          cleanCover = cleanCover.replace(/^http:\//, 'http://');
+          cleanCover = cleanCover.replace(/^https:\//, 'https://');
+        }
+
+        items.push({
+          id: id,
+          slug: id,
+          title: titleText || title,
+          cover: cleanCover,
+          latestChapter: latestChapter,
+        });
+      }
+
+      return items;
+
+    } catch (error) {
+      throw error;
+    }
   }
 };
 
