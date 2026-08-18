@@ -1,6 +1,16 @@
 {
   "extensions": [
     {
+      "name": "mgread",
+      "version": "1.0.0",
+      "description": "",
+      "author": "",
+      "scriptPath": "./mgread/mgread.exe",
+      "executable": "./mgread/mgread.exe",
+      "platform": "windows",
+      "cover": "https://raw.githubusercontent.com/Skippers-droid/wzread-extensions/main/bundled-extensions/mgread/cover.png"
+    },
+    {
       "name": "thunderscans",
       "version": "1.0.0",
       "description": "",

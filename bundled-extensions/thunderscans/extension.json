@@ -7,7 +7,7 @@
   "scriptPath": "./thunderscans/thunderscans.exe",
   "platform": "windows",
   "bundled": true,
-  "bundledAt": "2026-08-07T02:27:48.144Z",
+  "bundledAt": "2026-08-18T11:07:30.924Z",
   "methods": [
     "search",
     "manga_info",

@@ -1,0 +1,22 @@
+{
+  "name": "mgread",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "executable": "./mgread/mgread.exe",
+  "scriptPath": "./mgread/mgread.exe",
+  "platform": "windows",
+  "bundled": true,
+  "bundledAt": "2026-08-18T11:07:30.435Z",
+  "methods": [
+    "search",
+    "manga_info",
+    "extension_info",
+    "chapter",
+    "getChapterImages",
+    "getPopular",
+    "getLatest",
+    "getFiltered"
+  ],
+  "cover": "https://raw.githubusercontent.com/Skippers-droid/wzread-extensions/main/bundled-extensions/mgread/cover.png"
+}
