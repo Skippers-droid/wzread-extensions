@@ -1,4 +1,5 @@
 {
+  "id": "thunderscans",
   "name": "thunderscans",
   "version": "1.0.0",
   "description": "",
@@ -7,7 +8,7 @@
   "scriptPath": "./thunderscans/thunderscans.exe",
   "platform": "windows",
   "bundled": true,
-  "bundledAt": "2026-08-18T11:07:30.924Z",
+  "bundledAt": "2026-08-19T11:22:01.417Z",
   "methods": [
     "search",
     "manga_info",

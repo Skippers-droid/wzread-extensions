@@ -1,4 +1,3 @@
-// bundle-extension.cjs
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
@@ -124,6 +123,7 @@ async function buildExtension(extensionPath, config) {
     }
 
     const metaData = {
+      id: extName,
       name: pkg.name || extName,
       version: pkg.version || '1.0.0',
       description: pkg.description || '',
@@ -353,6 +353,7 @@ async function bundleAllExtensions(config) {
 
     const manifestExts = results.map(ext => {
       const entry = {
+        id: ext.name,
         name: ext.metaData.name,
         version: ext.metaData.version,
         description: ext.metaData.description,
@@ -392,6 +393,7 @@ async function createExtensionManifest(outputDir, extensions, config) {
   const manifest = {
     extensions: extensions.map(ext => {
       const entry = {
+        id: ext.id,
         name: ext.name,
         version: ext.version,
         description: ext.description,

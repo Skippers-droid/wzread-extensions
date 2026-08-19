@@ -1,6 +1,7 @@
 {
   "extensions": [
     {
+      "id": "mgread",
       "name": "mgread",
       "version": "1.0.0",
       "description": "",
@@ -11,6 +12,7 @@
       "cover": "https://raw.githubusercontent.com/Skippers-droid/wzread-extensions/main/bundled-extensions/mgread/cover.png"
     },
     {
+      "id": "thunderscans",
       "name": "thunderscans",
       "version": "1.0.0",
       "description": "",
