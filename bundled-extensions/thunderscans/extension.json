@@ -8,7 +8,7 @@
   "scriptPath": "./thunderscans/thunderscans.exe",
   "platform": "windows",
   "bundled": true,
-  "bundledAt": "2026-08-19T11:22:01.417Z",
+  "bundledAt": "2026-08-20T07:41:56.670Z",
   "methods": [
     "search",
     "manga_info",
@@ -18,6 +18,5 @@
     "getPopular",
     "getLatest",
     "getFiltered"
-  ],
-  "cover": "https://raw.githubusercontent.com/Skippers-droid/wzread-extensions/main/bundled-extensions/thunderscans/cover.png"
+  ]
 }

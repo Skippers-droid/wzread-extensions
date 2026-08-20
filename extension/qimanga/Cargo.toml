@@ -1,12 +1,12 @@
 [package]
-name = "mgread"
+name = "qimanga"
 version = "1.0.0"
 edition = "2021"
 authors = ["wzread"]
-description = "Mgread.io extension - Read Free Manga – Manhwa – Manhua – Anime Online"
+description = "Qimanga extension - Read comics from Qimanga"
 
 [[bin]]
-name = "mgread"
+name = "qimanga"
 path = "src/main.rs"
 
 [dependencies]
