@@ -1,3 +1,4 @@
+// tester.js
 const { exec, spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
@@ -78,12 +79,14 @@ async function selectExtension(extensions) {
 function executeMethod(method, args = []) {
     return new Promise((resolve, reject) => {
         const startTime = performance.now();
-        const cmd = `"${extensionExe}" ${method} ${args.join(' ')}`;
+        
+        // For RPC mode, we need to start the extension with --rpc flag first
+        const isRpc = true;
         
         log(`\n🚀 Executing: ${method}`, 'info');
-        log(`📝 Command: ${cmd}`, 'debug');
+        log(`📝 Command: "${extensionExe}" --rpc`, 'debug');
         
-        const child = spawn(extensionExe, [method, ...args], {
+        const child = spawn(extensionExe, ['--rpc'], {
             env: { 
                 ...process.env, 
                 USER_AGENT: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
@@ -94,19 +97,43 @@ function executeMethod(method, args = []) {
 
         let stdout = '';
         let stderr = '';
+        let port = 0;
         let logs = [];
+        let resolved = false;
 
         child.stdout.on('data', (data) => {
             const output = data.toString();
             stdout += output;
-            // Check if it's JSON or plain output
+            
+            // Check for RPC_PORT
+            const portMatch = output.match(/RPC_PORT=(\d+)/);
+            if (portMatch) {
+                port = parseInt(portMatch[1]);
+                log(`🔌 RPC server started on port ${port}`, 'success');
+                
+                // Now make RPC call
+                makeRpcCall(port, method, args).then(result => {
+                    if (!resolved) {
+                        resolved = true;
+                        child.kill();
+                        resolve(result);
+                    }
+                }).catch(err => {
+                    if (!resolved) {
+                        resolved = true;
+                        child.kill();
+                        reject(err);
+                    }
+                });
+            }
+            
+            // Display any JSON output
             try {
                 const parsed = JSON.parse(output);
                 log(`📤 JSON Output:`, 'success');
                 console.log(JSON.stringify(parsed, null, 2));
             } catch {
-                // Not JSON, display as raw
-                if (output.trim()) {
+                if (output.trim() && !output.includes('RPC_PORT')) {
                     log(`📤 Output:`, 'info');
                     console.log(output);
                 }
@@ -117,12 +144,10 @@ function executeMethod(method, args = []) {
             const output = data.toString();
             stderr += output;
             
-            // Filter and display extension logs
             const lines = output.split('\n');
             for (const line of lines) {
                 if (line.trim()) {
-                    // Check if it's a log from the extension
-                    if (line.includes('[qimanga]') || line.includes('[mgread]') || line.includes('[thunderscans]') || line.includes('[vortexscans]')) {
+                    if (line.includes('[extension]')) {
                         log(`🔍 ${line.trim()}`, 'debug');
                         logs.push(line.trim());
                     } else if (line.includes('Error') || line.includes('error')) {
@@ -140,32 +165,76 @@ function executeMethod(method, args = []) {
             const endTime = performance.now();
             const duration = (endTime - startTime).toFixed(2);
             
-            log(`\n⏱️  Execution time: ${duration}ms`, 'info');
-            log(`📊 Exit code: ${code}`, code === 0 ? 'success' : 'error');
-            
-            // Show any remaining logs
-            if (stderr && !logs.length) {
-                log(`\n📝 Extension logs:`, 'info');
-                console.log(stderr);
+            if (!resolved) {
+                resolved = true;
+                log(`\n⏱️  Execution time: ${duration}ms`, 'info');
+                log(`📊 Exit code: ${code}`, code === 0 ? 'success' : 'error');
+                resolve({ code, stdout, stderr, duration, logs });
             }
-            
-            if (stdout) {
-                try {
-                    const result = JSON.parse(stdout);
-                    log(`\n✅ Final Result:`, 'success');
-                    console.log(JSON.stringify(result, null, 2));
-                } catch {
-                    // Already displayed above
-                }
-            }
-            
-            resolve({ code, stdout, stderr, duration, logs });
         });
 
         child.on('error', (err) => {
-            reject(err);
+            if (!resolved) {
+                resolved = true;
+                reject(err);
+            }
         });
+
+        // Timeout after 30 seconds
+        setTimeout(() => {
+            if (!resolved) {
+                resolved = true;
+                child.kill();
+                reject(new Error('RPC call timeout'));
+            }
+        }, 30000);
     });
+}
+
+async function makeRpcCall(port, method, args) {
+    const fetch = await import('node-fetch').then(m => m.default || m);
+    
+    // Map method names to RPC method names
+    const methodMap = {
+        'search': 'search',
+        'getPopular': 'getPopular',
+        'getLatest': 'getLatest',
+        'getFiltered': 'getFiltered',
+        'manga_info': 'manga_info',
+        'get_chapter_images': 'get_chapter_images',
+        'extension_info': 'extension_info'
+    };
+    
+    const rpcMethod = methodMap[method] || method;
+    const params = args.map(arg => {
+        // Convert string numbers to actual numbers
+        const num = parseFloat(arg);
+        return isNaN(num) ? arg : num;
+    });
+    
+    const response = await fetch(`http://127.0.0.1:${port}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            jsonrpc: '2.0',
+            method: rpcMethod,
+            params: params,
+            id: 1
+        })
+    });
+    
+    const result = await response.json();
+    
+    if (result.error) {
+        throw new Error(`RPC error: ${result.error.message || JSON.stringify(result.error)}`);
+    }
+    
+    log(`\n✅ Final Result:`, 'success');
+    console.log(JSON.stringify(result.result, null, 2));
+    
+    return result.result;
 }
 
 async function showMethods() {
@@ -221,7 +290,11 @@ async function getMethodArgs(method) {
 async function runMethod(method) {
     log(`\n${'━'.repeat(50)}`, 'info');
     const args = await getMethodArgs(method);
-    await executeMethod(method, args);
+    try {
+        await executeMethod(method, args);
+    } catch (error) {
+        log(`❌ Error: ${error.message}`, 'error');
+    }
     log(`${'━'.repeat(50)}\n`, 'info');
 }
 
@@ -234,7 +307,7 @@ async function runAllMethods() {
 
 async function main() {
     log('\n╔═══════════════════════════════════════════════════╗', 'info');
-    log('║     WZREAD Extension Tester v1.0                 ║', 'info');
+    log('║     WZREAD Extension Tester v2.0 (RPC)           ║', 'info');
     log('╚═══════════════════════════════════════════════════╝\n', 'info');
 
     const extensions = await loadExtensions();
@@ -261,7 +334,7 @@ async function main() {
             clearLogs = false;
             log('\n🧹 Logs cleared!', 'success');
             log('\n╔═══════════════════════════════════════════════════╗', 'info');
-            log('║     WZREAD Extension Tester v1.0                 ║', 'info');
+            log('║     WZREAD Extension Tester v2.0 (RPC)           ║', 'info');
             log('╚═══════════════════════════════════════════════════╝\n', 'info');
             log(`📦 Selected: ${selectedExtension.name} (${selectedExtension.id})`, 'success');
         }
